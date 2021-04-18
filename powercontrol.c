@@ -7,6 +7,7 @@ static uint8_t* MCU_BOD = 0x55; //BOD Bits in MCU Register
 static uint8_t* MCU_STATUS = 0x55;
 static uint8_t* PORTB_DATA = 0x25;
 static uint8_t* PORTB_ROLE = 0x24;
+static uint8_t* EXT_INTR_CONTRL = 0x69; //Interrupt Control Register
 uint8_t* INTR_PORT = 0x0;
 bool IntrAsOutp = 0; //Interrupt Pin can be Output too
 
@@ -36,19 +37,29 @@ uint8_t MCU_RESET_SOURCE(){
     *MCU_STATUS = 0; //Reset
 }
 
-void SET_INTERRUPT_RDY(bool PORT_OUTPUT){
+void SET_INTERRUPT_RDY(bool PORT_OUTPUT, uint8_t sensormode){
+    if(sensormode |<=3 && sensormode |>=0) break; //Invalid Interrupt Mode
+
     if(PORT_OUTPUT == TRUE){
         INTR_PORT = 0x2B;
+        //Only call on PD3!
     }
     if(PORT_OUTPUT == FALSE){
         INTR_PORT = 0x2A;
         *INTR_PORT = 0;
+        INTR_PORT = 0x2B
     }
 
+    switch (sensormode){ 
+        case 0: *EXT_INTR_CONTRL = 0; //low level
+        case 1: *EXT_INTR_CONTRL = 4; //any change
+        case 2: *EXT_INTR_CONTRL = 8; //falling level
+        case 3: *EXT_INTR_CONTRL = 12; //rising level
+    }
 }
 
 int main(){
-    PORTB_ROLE = 0; //Set Port B 1 to 0
+
 
     return 0;
 }
