@@ -43,19 +43,27 @@ void SET_INTERRUPT_RDY(bool PORT_OUTPUT, uint8_t sensormode){
     if(PORT_OUTPUT == TRUE){
         INTR_PORT = 0x2B;
         //Only call on PD3!
+        switch (sensormode){ 
+            case 0: *EXT_INTR_CONTRL = 0; //low level
+            case 1: *EXT_INTR_CONTRL = 4; //any change
+            case 2: *EXT_INTR_CONTRL = 8; //falling level
+            case 3: *EXT_INTR_CONTRL = 12; //rising level
+         }
     }
+
     if(PORT_OUTPUT == FALSE){
         INTR_PORT = 0x2A;
         *INTR_PORT = 0;
         INTR_PORT = 0x2B
+        switch (sensormode){ 
+            case 0: *EXT_INTR_CONTRL = 0; //low level
+            case 1: *EXT_INTR_CONTRL = 1; //any change
+            case 2: *EXT_INTR_CONTRL = 2; //falling level
+            case 3: *EXT_INTR_CONTRL = 3; //rising level
+         }
     }
 
-    switch (sensormode){ 
-        case 0: *EXT_INTR_CONTRL = 0; //low level
-        case 1: *EXT_INTR_CONTRL = 4; //any change
-        case 2: *EXT_INTR_CONTRL = 8; //falling level
-        case 3: *EXT_INTR_CONTRL = 12; //rising level
-    }
+
 }
 
 int main(){
