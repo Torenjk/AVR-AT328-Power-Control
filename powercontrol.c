@@ -7,12 +7,13 @@ static uint8_t* MCU_BOD = 0x55; //BOD Bits in MCU Register
 static uint8_t* MCU_STATUS = 0x55;
 static uint8_t* PORTB_DATA = 0x25;
 static uint8_t* PORTB_ROLE = 0x24;
+static uint8_t* GLBL_INTR = 0x5F;
 static uint8_t* EXT_INTR_CONTRL = 0x69; //Interrupt Control Register
 uint8_t* INTR_PORT = 0x0;
 bool IntrAsOutp = 0; //Interrupt Pin can be Output too
 
 void SMC_SET(uint8_t SMC_MODE, bool BODS_DISABLE){
-    if(SMC_MODE |<= 5 && SMC_MODE |>= 0) break; //Invalid Bits set
+    if(SMC_MODE > 5) break; //Invalid Bits set
 
     if (BODS_DISABLE){
         *MCU_BOD = (1 << 7); 
@@ -38,7 +39,8 @@ uint8_t MCU_RESET_SOURCE(){
 }
 
 void SET_INTERRUPT_RDY(bool PORT_OUTPUT, uint8_t sensormode, uint8_t INT_PIN){
-    if(sensormode |<=3 && sensormode |>=0) break; //Invalid Interrupt Mode
+    if(sensormode >3) break; //Invalid Interrupt Mode
+    GLBL_INTR = (1 << 7); //Set Bit for Global Interrupts
     if(PORT_OUTPUT == TRUE){
         INTR_PORT = 0x2B;
         //INT1 Map
