@@ -7,4 +7,4 @@ Compile with avr-gcc.
 Todo:
 - Change LPCO Operate modes
 - Clock Source setup
-- external interrupt detection (e.g Port B)
+- ~~external interrupt detection (e.g Port B)~~ (done)
